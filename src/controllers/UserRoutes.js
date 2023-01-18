@@ -14,10 +14,14 @@ const {
   createUser,
 } = require("./UserFunctions");
 
+// const { validateEmail } = require("../controllers/middleware/auth");
+
 // [POST] /register
 // Register a new user and return from database
-router.post("/register", async (request, response) => {
-  const createdUser = await createUser(request.body);
+router.post("/register", errorHandler, async (request, response, next) => {
+  const createdUser = await createUser(request.body).catch((error) => {
+    return next(new Error(error.message));
+  });
 
   return response.json(createdUser);
 });
@@ -29,5 +33,16 @@ router.get("/", async (request, response) => {
 
   return response.json(users);
 });
+
+// Error handler
+async function errorHandler(error, request, response, next) {
+  if (error) {
+    return response.status(500).json({
+      error: error.message,
+    });
+  } else {
+    next();
+  }
+}
 
 module.exports = router;

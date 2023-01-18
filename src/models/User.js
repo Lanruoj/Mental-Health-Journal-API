@@ -1,10 +1,14 @@
 const mongoose = require("mongoose");
 const mongooseAutoPopulate = require("mongoose-autopopulate");
+const { validateEmail } = require("../controllers/middleware/auth");
 const { Role } = require("../models/Role");
-// const { Post } = require("../models/Post");
 
 const UserSchema = new mongoose.Schema({
-  email: { type: String, required: true },
+  email: {
+    type: String,
+    required: true,
+    validate: [validateEmail, "Must be a valid email address"],
+  },
   password: { type: String, minLength: 8 },
   username: { type: String, minLength: 3 },
   firstName: String,
