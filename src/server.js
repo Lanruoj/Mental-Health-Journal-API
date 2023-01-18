@@ -32,6 +32,9 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
+// Import routes
+app.use("/users", require("./controllers/UserRoutes"));
+
 // Configure database URL
 const mongoose = require("mongoose");
 let databaseURL = "";

@@ -20,7 +20,7 @@ async function createUser(userData) {
     password: hashedPassword,
     username: userData.username,
     firstName: userData.firstName || null,
-    lastName: userData.lastname || null,
+    lastName: userData.lastName || null,
     role: userData.role,
   };
 
