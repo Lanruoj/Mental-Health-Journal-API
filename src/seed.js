@@ -2,9 +2,11 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 dotenv.config();
 const { connectDatabase } = require("./database");
+const { hashString } = require("./controllers/UserFunctions");
 const { Role } = require("./models/Role");
+const { User } = require("./models/User");
 
-const roles = [
+const roleSeeds = [
   {
     name: "admin",
     description: "Administrator with full access and permissions",
@@ -19,6 +21,33 @@ const roles = [
   {
     name: "banned",
     description: "A user that has been banned - no permissions or access",
+  },
+];
+
+const userSeeds = [
+  {
+    email: "admin@email.com",
+    password: null,
+    username: "admin-user",
+    firstName: "Administrator",
+    lastName: "User",
+    role: null,
+  },
+  {
+    email: "regular@email.com",
+    password: null,
+    username: "regular-user",
+    firstName: "Regular",
+    lastName: "User",
+    role: null,
+  },
+  {
+    email: "banned@email.com",
+    password: null,
+    username: "banned-user",
+    firstName: "Banned",
+    lastName: "User",
+    role: null,
   },
 ];
 
@@ -63,5 +92,14 @@ connectDatabase(databaseURL)
   })
   .then(async () => {
     // Seed database with provided seed objects
-    const roleSeeds = await Role.insertMany(roles);
+    const createdRoles = await Role.insertMany(roleSeeds);
+    // Generate hashed passwords for each user
+    for (const user of userSeeds) {
+      user.password = await hashString(process.env.USER_SEED_PASSWORD);
+    }
+    // Assign roles to each user
+    userSeeds.forEach((user, index) => {
+      // Matches admin, regular and banned user with corresponding role
+      user.role = createdRoles[index]._id;
+    });
   });
