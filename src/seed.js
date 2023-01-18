@@ -102,4 +102,6 @@ connectDatabase(databaseURL)
       // Matches admin, regular and banned user with corresponding role
       user.role = createdRoles[index]._id;
     });
+    // Insert users into database
+    const createdUsers = await User.insertMany(userSeeds);
   });
