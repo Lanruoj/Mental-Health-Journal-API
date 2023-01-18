@@ -131,4 +131,9 @@ connectDatabase(databaseURL)
     // Insert users into database
     const createdUsers = await User.insertMany(userSeeds);
     // Assign an author to each post
+    postSeeds.forEach((post, index) => {
+      post.author = createdUsers[index]._id;
+    });
+
+    console.log(postSeeds);
   });
