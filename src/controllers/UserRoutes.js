@@ -2,15 +2,24 @@ const express = require("express");
 const router = express.Router();
 
 const { User } = require("../models/User");
-const { createUser, getAllUsers } = require("./UserFunctions");
+const {
+  encryptString,
+  decryptString,
+  decryptObject,
+  hashString,
+  validateHashedData,
+  generateJWT,
+  generateUserJWT,
+  getAllUsers,
+  createUser,
+} = require("./UserFunctions");
 
 // [POST] /register
 // Register a new user and return from database
 router.post("/register", async (request, response) => {
   const createdUser = await createUser(request.body);
-  const userDoc = await User.findById(createdUser.id).populate("role").exec();
 
-  return response.json(userDoc);
+  return response.json(createdUser);
 });
 
 // [GET] /
