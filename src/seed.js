@@ -5,6 +5,7 @@ const { connectDatabase } = require("./database");
 const { hashString } = require("./controllers/UserFunctions");
 const { Role } = require("./models/Role");
 const { User } = require("./models/User");
+const { Post } = require("./models/Post");
 
 const roleSeeds = [
   {
@@ -53,7 +54,7 @@ const userSeeds = [
 
 const postSeeds = [
   {
-    date: "2023-18-01",
+    date: "2023-01-18",
     moodRating: 8,
     description:
       "Feeling good today! Not worried about much and feeling grateful.",
@@ -61,14 +62,14 @@ const postSeeds = [
     author: null,
   },
   {
-    date: "2023-18-01",
+    date: "2023-01-03",
     moodRating: 6,
     description: "Feeling okay today, just a bit anxious.",
     actionPlan: "Don't push myself too hard today",
     author: null,
   },
   {
-    date: "2022-24-12",
+    date: "2022-12-24",
     moodRating: 2,
     description:
       "Feel completely broken, depressed and worried about the future.",
@@ -134,6 +135,6 @@ connectDatabase(databaseURL)
     postSeeds.forEach((post, index) => {
       post.author = createdUsers[index]._id;
     });
-
-    console.log(postSeeds);
+    // Insert posts into database
+    const createdPosts = await Post.insertMany(postSeeds);
   });
