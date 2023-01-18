@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 dotenv.config();
-const { connectDatabase } = require("./database");
+const { connectDatabase, disconnectDatabase } = require("./database");
 const { hashString } = require("./controllers/UserFunctions");
 const { Role } = require("./models/Role");
 const { User } = require("./models/User");
@@ -99,7 +99,7 @@ switch (process.env.NODE_ENV.toLowerCase()) {
 
 // Seed database
 connectDatabase(databaseURL)
-  .then(() => console.log("Database successfully connected to seed"))
+  .then(() => console.log("Database connected"))
   .catch((error) => console.log(`Error: ${error}`))
   .then(async () => {
     // If WIPE=true, drop all collections from database
@@ -137,4 +137,11 @@ connectDatabase(databaseURL)
     });
     // Insert posts into database
     const createdPosts = await Post.insertMany(postSeeds);
+
+    console.log("Database seeded");
+  })
+  .then(async () => {
+    disconnectDatabase();
+
+    console.log("Database disconnected");
   });
