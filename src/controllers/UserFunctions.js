@@ -1,7 +1,7 @@
+const { User } = require("../models/User");
+
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
-
-const { User } = require("../models/User");
 
 // Hash and return a string
 async function hashString(string) {
@@ -27,4 +27,11 @@ async function createUser(userData) {
   return await User.create(newUser);
 }
 
-module.exports = { hashString, createUser };
+// Find and return all users
+async function getAllUsers() {
+  const allUsers = await User.find({}).populate("role").exec();
+
+  return allUsers;
+}
+
+module.exports = { hashString, createUser, getAllUsers };
