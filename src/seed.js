@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
-
+const dotenv = require("dotenv");
+dotenv.config();
 const { connectDatabase } = require("./database");
 const { Role } = require("./models/Role");
 
@@ -21,15 +22,14 @@ const roles = [
   },
 ];
 
-// Configure Mongoose & database environment settings
-const mongoose = require("mongoose");
+// Configure database URL
 let databaseURL = "";
 switch (process.env.NODE_ENV.toLowerCase()) {
   case "test":
-    databaseURL = "mongodb://localhost:27017/ExpressAPI-test";
+    databaseURL = process.env.TEST_DATABASE_URL;
     break;
   case "development":
-    databaseURL = "mongodb://localhost:27017/ExpressAPI-dev";
+    databaseURL = process.env.DEV_DATABASE_URL;
     break;
   case "production":
     databaseURL = process.env.DATABASE_URL;
@@ -47,7 +47,7 @@ connectDatabase(databaseURL)
   .catch((error) => console.log(`Error: ${error}`))
   .then(async () => {
     // If WIPE=true, drop all collections from database
-    if (process.env.WIPE) {
+    if (process.env.WIPE == "true") {
       const collections = await mongoose.connection.db
         .listCollections()
         .toArray();
@@ -63,10 +63,5 @@ connectDatabase(databaseURL)
   })
   .then(async () => {
     // Seed database with provided seed objects
-    const roleSeeds = await Role.insertMany(roles)
-      .exec()
-      .then((role) => {
-        return role._id;
-      });
-    console.log(roleSeeds);
+    const roleSeeds = await Role.insertMany(roles);
   });

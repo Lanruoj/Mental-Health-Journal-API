@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start-dev": "NODE_ENV=development nodemon src/index.js"
+    "start-dev": "NODE_ENV=development nodemon src/index.js",
+    "seed-dev": "NODE_ENV=development WIPE=true nodemon src/seed.js"
   },
   "keywords": [],
   "author": "",
