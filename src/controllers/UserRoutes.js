@@ -1,17 +1,16 @@
 const express = require("express");
 const router = express.Router();
 
-// const { User } = require("../models/User");
+const { User } = require("../models/User");
 const { createUser, getAllUsers } = require("./UserFunctions");
 
 // [POST] /register
-// Register a new user
+// Register a new user and return from database
 router.post("/register", async (request, response) => {
   const createdUser = await createUser(request.body);
-  return response.json(createdUser);
+  const userDoc = await User.findById(createdUser.id).populate("role").exec();
 
-  // const user = await User.findById(createdUser.id).populate("role").exec();
-  // return response.json(user);
+  return response.json(userDoc);
 });
 
 // [GET] /

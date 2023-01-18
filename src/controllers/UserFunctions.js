@@ -1,6 +1,7 @@
 const { User } = require("../models/User");
 
 const bcrypt = require("bcrypt");
+const { response } = require("express");
 const saltRounds = 10;
 
 // Hash and return a string
@@ -24,7 +25,9 @@ async function createUser(userData) {
     role: userData.role,
   };
 
-  return await User.create(newUser);
+  const createdUser = await User.create(newUser);
+
+  return createdUser;
 }
 
 // Find and return all users
