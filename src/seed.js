@@ -51,6 +51,32 @@ const userSeeds = [
   },
 ];
 
+const postSeeds = [
+  {
+    date: "2023-18-01",
+    moodRating: 8,
+    description:
+      "Feeling good today! Not worried about much and feeling grateful.",
+    actionPlan: null,
+    author: null,
+  },
+  {
+    date: "2023-18-01",
+    moodRating: 6,
+    description: "Feeling okay today, just a bit anxious.",
+    actionPlan: "Don't push myself too hard today",
+    author: null,
+  },
+  {
+    date: "2022-24-12",
+    moodRating: 2,
+    description:
+      "Feel completely broken, depressed and worried about the future.",
+    actionPlan: "Book a therapy appointment",
+    author: null,
+  },
+];
+
 // Configure database URL
 let databaseURL = "";
 switch (process.env.NODE_ENV.toLowerCase()) {
@@ -104,4 +130,5 @@ connectDatabase(databaseURL)
     });
     // Insert users into database
     const createdUsers = await User.insertMany(userSeeds);
+    // Assign an author to each post
   });
