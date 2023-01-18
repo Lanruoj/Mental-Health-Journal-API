@@ -64,7 +64,8 @@ async function generateUserJWT(userDetails) {
 
 // Find and return all users
 async function getAllUsers() {
-  const allUsers = await User.find({}).populate("role").exec();
+  // Populate role field with *only* name
+  const allUsers = await User.find({}).populate("role", "name -_id").exec();
 
   return allUsers;
 }
