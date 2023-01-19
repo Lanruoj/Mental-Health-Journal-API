@@ -83,6 +83,12 @@ async function verifyUserJWT(userJWT) {
   }
 }
 
+// Verify and refresh token
+async function verifyAndRefreshUserJWT(userJWT) {
+  const targetUser = verifyUserJWT(userJWT);
+  return await generateUserJWT(targetUser);
+}
+
 // Parse token from authorization header
 function parseJWT(header) {
   const jwt = header?.split(" ")[1].trim();
@@ -146,5 +152,6 @@ module.exports = {
   getUserById,
   updateUser,
   verifyUserJWT,
+  verifyAndRefreshUserJWT,
   parseJWT,
 };
