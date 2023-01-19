@@ -20,7 +20,7 @@ const {
 // Register a new user and return from database
 router.post("/register", errorHandler, async (request, response, next) => {
   const createdUser = await createUser(request.body).catch((error) => {
-    return next(new Error(error.message));
+    return next(new Error(error));
   });
 
   return response.json(createdUser);
@@ -37,9 +37,7 @@ router.get("/", async (request, response) => {
 // Error handler
 async function errorHandler(error, request, response, next) {
   if (error) {
-    return response.status(500).json({
-      error: error.message,
-    });
+    return response.status(500).json(error.message);
   } else {
     next();
   }
