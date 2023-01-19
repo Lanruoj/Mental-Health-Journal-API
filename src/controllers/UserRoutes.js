@@ -13,6 +13,9 @@ const {
   getAllUsers,
   createUser,
   getUserById,
+  updateUser,
+  verifyUserJWT,
+  parseJWT,
 } = require("./UserFunctions");
 
 // Get all users
@@ -28,6 +31,18 @@ router.get("/:userID", async (request, response) => {
     next(new Error("User not found with that ID"))
   );
   return response.json(foundUser);
+});
+
+// Update user details
+router.put("/", async (request, response) => {
+  // Parse JWT from authorization header
+  const jwt = parseJWT(request.get("authorization"));
+  // Find user from JWT
+  const foundUser = await verifyUserJWT(jwt);
+  // Update user using request.body data
+  const updatedUser = await updateUser(foundUser, request.body);
+
+  return response.json(updatedUser);
 });
 
 // Error handler

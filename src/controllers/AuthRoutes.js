@@ -36,11 +36,7 @@ router.post("/login", errorHandler, async (request, response, next) => {
   ) {
     next(new Error("Invalid login details, please try again"));
   } else {
-    console.log(existingUser.role);
-    const token = await generateUserJWT({
-      id: existingUser.id,
-      role: existingUser.role,
-    });
+    const token = await generateUserJWT(existingUser);
     return response.json(token);
   }
 });

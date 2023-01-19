@@ -60,6 +60,35 @@ async function generateUserJWT(userDetails) {
   return generateJWT({ data: encryptedUserData });
 }
 
+// Verify a User's JWT and refresh
+async function verifyUserJWT(userJWT) {
+  // Verify JWT is valid
+  const verifiedJWT = jwt.verify(userJWT, process.env.JWT_SECRET_KEY, {
+    complete: true,
+  });
+  // Decrypt JWT payload
+  const decryptedJWT = decryptString(verifiedJWT.payload.data);
+  // Parse decrypted data into an object
+  const userData = JSON.parse(decryptedJWT);
+  // Find User from data
+  const targetUser = await User.findById(userData._id).exec();
+  // Check that JWT data matches stored data
+  if (
+    targetUser.password == userData.password &&
+    targetUser.email == userData.email
+  ) {
+    return targetUser;
+  } else {
+    throw new Error({ message: "Invalid user token" });
+  }
+}
+
+// Parse token from authorization header
+function parseJWT(header) {
+  const jwt = header?.split(" ")[1].trim();
+  return jwt;
+}
+
 // ---- Route functions ----
 
 // Find and return all users
@@ -95,6 +124,15 @@ async function createUser(userData) {
   return createdUser;
 }
 
+// Update a user details
+async function updateUser(userID, updateData) {
+  const updatedUser = await User.findByIdAndUpdate(userID, updateData, {
+    returnDocument: "after",
+  });
+
+  return updatedUser;
+}
+
 module.exports = {
   encryptString,
   decryptString,
@@ -106,4 +144,7 @@ module.exports = {
   getAllUsers,
   createUser,
   getUserById,
+  updateUser,
+  verifyUserJWT,
+  parseJWT,
 };
