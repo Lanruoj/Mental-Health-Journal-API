@@ -14,9 +14,13 @@ const {
   createUser,
 } = require("./UserFunctions");
 
-// const { validateEmail } = require("../controllers/middleware/auth");
+// Get all users
+router.get("/", async (request, response) => {
+  const users = await getAllUsers();
 
-// [POST] /register
+  return response.json(users);
+});
+
 // Register a new user and return JWT
 router.post("/register", errorHandler, async (request, response, next) => {
   const createdUser = await createUser(request.body).catch((error) => {
@@ -30,7 +34,6 @@ router.post("/register", errorHandler, async (request, response, next) => {
   return response.json(token);
 });
 
-// [POST] /login
 // Login an existing user and return JWT
 router.post("/login", errorHandler, async (request, response, next) => {
   const existingUser = await User.findOne({ email: request.body.email });
@@ -47,14 +50,6 @@ router.post("/login", errorHandler, async (request, response, next) => {
     });
     return response.json(token);
   }
-});
-
-// [GET] /
-// Get all users
-router.get("/", async (request, response) => {
-  const users = await getAllUsers();
-
-  return response.json(users);
 });
 
 // Error handler

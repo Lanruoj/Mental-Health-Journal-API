@@ -70,6 +70,12 @@ async function getAllUsers() {
   return allUsers;
 }
 
+// Get user by ID
+async function getUserById(userId) {
+  const foundUser = await User.findById(userId);
+  return foundUser;
+}
+
 // Create and register a new user
 async function createUser(userData) {
   // Hash password
