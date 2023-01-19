@@ -23,7 +23,11 @@ router.post("/register", errorHandler, async (request, response, next) => {
     return next(new Error(error));
   });
 
-  return response.json(createdUser);
+  const encryptedUserJWT = await generateUserJWT({
+    id: createdUser.id,
+  });
+
+  return response.json(encryptedUserJWT);
 });
 
 // [GET] /
