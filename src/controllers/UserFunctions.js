@@ -86,7 +86,7 @@ async function verifyUserJWT(userJWT) {
 // Verify and refresh token
 async function verifyAndRefreshUserJWT(userJWT) {
   const targetUser = verifyUserJWT(userJWT);
-  return await generateUserJWT(targetUser);
+  return await generateUserJWT({ data: targetUser });
 }
 
 // Parse token from authorization header
@@ -124,8 +124,11 @@ async function createUser(userData) {
     lastName: userData.lastName || null,
     role: userData.role,
   };
+  console.log(newUser);
 
   const createdUser = await User.create(newUser);
+
+  // console.log(createdUser);
 
   return createdUser;
 }

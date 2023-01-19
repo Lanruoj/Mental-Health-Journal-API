@@ -20,9 +20,7 @@ router.post("/register", errorHandler, async (request, response, next) => {
     return next(new Error(error));
   });
 
-  const token = await generateUserJWT({
-    id: createdUser.id,
-  });
+  const token = await generateUserJWT(createdUser);
 
   return response.json(token);
 });
@@ -37,6 +35,7 @@ router.post("/login", errorHandler, async (request, response, next) => {
     next(new Error("Invalid login details, please try again"));
   } else {
     const token = await generateUserJWT(existingUser);
+
     return response.json(token);
   }
 });

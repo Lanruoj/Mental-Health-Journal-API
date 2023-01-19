@@ -35,10 +35,6 @@ router.get("/:userID", async (request, response) => {
 
 // Update user details
 router.put("/", async (request, response) => {
-  // Parse JWT from authorization header
-  const jwt = parseJWT(request.get("authorization"));
-  // Find user from JWT
-  const foundUser = await verifyUserJWT(jwt);
   // Update user using request.body data
   const updatedUser = await updateUser(foundUser, request.body);
 

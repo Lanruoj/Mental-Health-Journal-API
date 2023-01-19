@@ -1,7 +1,14 @@
 const mongoose = require("mongoose");
+const { isEmail } = require("validator");
 const mongooseAutoPopulate = require("mongoose-autopopulate");
-const { validateEmail } = require("../controllers/middleware/auth");
 const { Role } = require("../models/Role");
+
+// Validate email format
+function validateEmail(email) {
+  if (!isEmail(email)) {
+    return false;
+  }
+}
 
 const UserSchema = new mongoose.Schema({
   email: {
