@@ -12,6 +12,7 @@ const {
   generateUserJWT,
   getAllUsers,
   createUser,
+  getUserById,
 } = require("./UserFunctions");
 
 // Get all users
@@ -21,35 +22,12 @@ router.get("/", async (request, response) => {
   return response.json(users);
 });
 
-// Register a new user and return JWT
-router.post("/register", errorHandler, async (request, response, next) => {
-  const createdUser = await createUser(request.body).catch((error) => {
-    return next(new Error(error));
-  });
-
-  const token = await generateUserJWT({
-    id: createdUser.id,
-  });
-
-  return response.json(token);
-});
-
-// Login an existing user and return JWT
-router.post("/login", errorHandler, async (request, response, next) => {
-  const existingUser = await User.findOne({ email: request.body.email });
-  if (
-    !existingUser ||
-    !(await validateHashedData(request.body.password, existingUser.password))
-  ) {
-    next(new Error("Invalid login details, please try again"));
-  } else {
-    console.log(existingUser.role);
-    const token = await generateUserJWT({
-      id: existingUser.id,
-      role: existingUser.role,
-    });
-    return response.json(token);
-  }
+// Get user by ID param
+router.get("/:userID", async (request, response) => {
+  const foundUser = await getUserById(request.params.userID).catch((error) =>
+    next(new Error("User not found with that ID"))
+  );
+  return response.json(foundUser);
 });
 
 // Error handler
