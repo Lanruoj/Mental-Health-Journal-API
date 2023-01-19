@@ -15,6 +15,7 @@ const {
   getUserById,
   updateUser,
   verifyUserJWT,
+  verifyAndRefreshUserJWT,
   parseJWT,
 } = require("./UserFunctions");
 
@@ -35,6 +36,10 @@ router.get("/:userID", async (request, response) => {
 
 // Update user details
 router.put("/", async (request, response) => {
+  const jwt = parseJWT(request.headers.authorization);
+  // Verify and refresh user JWT
+  const [foundUser, newJWT] = await verifyAndRefreshUserJWT(jwt);
+  request.headers.authorization = newJWT;
   // Update user using request.body data
   const updatedUser = await updateUser(foundUser, request.body);
 

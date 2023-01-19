@@ -14,12 +14,14 @@ let decipher = crypto.createDecipheriv(encAlgorithm, encPrivateKey, encIV);
 // Encrypt a string
 function encryptString(data) {
   cipher = crypto.createCipheriv(encAlgorithm, encPrivateKey, encIV);
+
   return cipher.update(data, "utf8", "hex") + cipher.final("hex");
 }
 
 // Decrypt a string
 function decryptString(data) {
   decipher = crypto.createDecipheriv(encAlgorithm, encPrivateKey, encIV);
+
   return decipher.update(data, "hex", "utf8") + decipher.final("utf8");
 }
 
@@ -36,6 +38,7 @@ const saltRounds = 10;
 async function hashString(string) {
   const salt = await bcrypt.genSalt(saltRounds);
   const hash = await bcrypt.hash(string, salt);
+
   return hash;
 }
 
@@ -70,8 +73,10 @@ async function verifyUserJWT(userJWT) {
   const decryptedJWT = decryptString(verifiedJWT.payload.data);
   // Parse decrypted data into an object
   const userData = JSON.parse(decryptedJWT);
+  // console.log(userData);
   // Find User from data
   const targetUser = await User.findById(userData._id).exec();
+  // console.log(targetUser);
   // Check that JWT data matches stored data
   if (
     targetUser.password == userData.password &&
@@ -85,13 +90,16 @@ async function verifyUserJWT(userJWT) {
 
 // Verify and refresh token
 async function verifyAndRefreshUserJWT(userJWT) {
-  const targetUser = verifyUserJWT(userJWT);
-  return await generateUserJWT({ data: targetUser });
+  const targetUser = await verifyUserJWT(userJWT);
+  const newJWT = await generateUserJWT(targetUser);
+
+  return [targetUser, newJWT];
 }
 
 // Parse token from authorization header
 function parseJWT(header) {
   const jwt = header?.split(" ")[1].trim();
+
   return jwt;
 }
 
@@ -108,6 +116,7 @@ async function getAllUsers() {
 // Get user by ID
 async function getUserById(userId) {
   const foundUser = await User.findById(userId);
+
   return foundUser;
 }
 
@@ -124,11 +133,7 @@ async function createUser(userData) {
     lastName: userData.lastName || null,
     role: userData.role,
   };
-  console.log(newUser);
-
   const createdUser = await User.create(newUser);
-
-  // console.log(createdUser);
 
   return createdUser;
 }
