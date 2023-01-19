@@ -17,17 +17,36 @@ const {
 // const { validateEmail } = require("../controllers/middleware/auth");
 
 // [POST] /register
-// Register a new user and return from database
+// Register a new user and return JWT
 router.post("/register", errorHandler, async (request, response, next) => {
   const createdUser = await createUser(request.body).catch((error) => {
     return next(new Error(error));
   });
 
-  const encryptedUserJWT = await generateUserJWT({
+  const token = await generateUserJWT({
     id: createdUser.id,
   });
 
-  return response.json(encryptedUserJWT);
+  return response.json(token);
+});
+
+// [POST] /login
+// Login an existing user and return JWT
+router.post("/login", errorHandler, async (request, response, next) => {
+  const existingUser = await User.findOne({ email: request.body.email });
+  if (
+    !existingUser ||
+    !(await validateHashedData(request.body.password, existingUser.password))
+  ) {
+    next(new Error("Invalid login details, please try again"));
+  } else {
+    console.log(existingUser.role);
+    const token = await generateUserJWT({
+      id: existingUser.id,
+      role: existingUser.role,
+    });
+    return response.json(token);
+  }
 });
 
 // [GET] /
