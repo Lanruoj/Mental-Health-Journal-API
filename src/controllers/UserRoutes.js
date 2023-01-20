@@ -20,14 +20,14 @@ const {
 const { verifyAndRefreshUserJWT, errorHandler } = require("./middleware/auth");
 
 // Get all users
-router.get("/", async (request, response) => {
+router.get("/", verifyAndRefreshUserJWT, async (request, response) => {
   const users = await getAllUsers();
 
   return response.json(users);
 });
 
 // Get user by ID param
-router.get("/:userID", async (request, response) => {
+router.get("/:userID", verifyAndRefreshUserJWT, async (request, response) => {
   const foundUser = await getUserById(request.params.userID).catch((error) =>
     next(new Error("User not found with that ID"))
   );

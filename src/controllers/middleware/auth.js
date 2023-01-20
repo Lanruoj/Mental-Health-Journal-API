@@ -17,7 +17,7 @@ async function verifyAndRefreshUserJWT(request, response, next) {
       complete: true,
     });
   } catch (error) {
-    return next(new Error({ error: "Invalid access token" }));
+    return next(new Error("Invalid access token"));
   }
   // Decrypt JWT payload
   const decryptedJWT = decryptString(verifiedJWT.payload.data);
@@ -41,8 +41,9 @@ async function verifyAndRefreshUserJWT(request, response, next) {
 
 // Error handler
 function errorHandler(error, request, response, next) {
+  console.log(error);
   if (error) {
-    return response.json({ error: "Invalid JWT" });
+    return response.json({ error: error.message });
   }
 }
 
