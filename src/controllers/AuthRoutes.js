@@ -19,10 +19,9 @@ router.post("/register", errorHandler, async (request, response, next) => {
   const createdUser = await createUser(request.body).catch((error) => {
     return next(new Error(error));
   });
-
   const token = await generateUserJWT(createdUser);
 
-  return response.json(token);
+  return response.json({ token });
 });
 
 // Login an existing user and return JWT
@@ -36,17 +35,19 @@ router.post("/login", errorHandler, async (request, response, next) => {
   } else {
     const token = await generateUserJWT(existingUser);
 
-    return response.json(token);
+    return response.json({ token });
   }
 });
 
 // Error handler
 async function errorHandler(error, request, response, next) {
   if (error) {
-    return response.status(500).json(error.message);
+    return response.status(500).json({ error: error.message });
   } else {
     next();
   }
 }
+
+router.use("/", errorHandler);
 
 module.exports = router;
