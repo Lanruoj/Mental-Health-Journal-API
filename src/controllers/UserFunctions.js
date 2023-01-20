@@ -63,39 +63,6 @@ async function generateUserJWT(userDetails) {
   return generateJWT({ data: encryptedUserData });
 }
 
-// Verify a User's JWT and refresh
-async function verifyUserJWT(userJWT) {
-  // Verify JWT is valid
-  const verifiedJWT = jwt.verify(userJWT, process.env.JWT_SECRET_KEY, {
-    complete: true,
-  });
-  // Decrypt JWT payload
-  const decryptedJWT = decryptString(verifiedJWT.payload.data);
-  // Parse decrypted data into an object
-  const userData = JSON.parse(decryptedJWT);
-  // console.log(userData);
-  // Find User from data
-  const targetUser = await User.findById(userData._id).exec();
-  // console.log(targetUser);
-  // Check that JWT data matches stored data
-  if (
-    targetUser.password == userData.password &&
-    targetUser.email == userData.email
-  ) {
-    return targetUser;
-  } else {
-    throw new Error({ message: "Invalid user token" });
-  }
-}
-
-// Verify and refresh token
-async function verifyAndRefreshUserJWT(userJWT) {
-  const targetUser = await verifyUserJWT(userJWT);
-  const newJWT = await generateUserJWT(targetUser);
-
-  return [targetUser, newJWT];
-}
-
 // Parse token from authorization header
 function parseJWT(header) {
   const jwt = header?.split(" ")[1].trim();
@@ -159,7 +126,5 @@ module.exports = {
   createUser,
   getUserById,
   updateUser,
-  verifyUserJWT,
-  verifyAndRefreshUserJWT,
   parseJWT,
 };

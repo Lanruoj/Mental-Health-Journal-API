@@ -14,10 +14,10 @@ const {
   createUser,
   getUserById,
   updateUser,
-  verifyUserJWT,
-  verifyAndRefreshUserJWT,
   parseJWT,
 } = require("./UserFunctions");
+
+const { verifyAndRefreshUserJWT, errorHandler } = require("./middleware/auth");
 
 // Get all users
 router.get("/", async (request, response) => {
@@ -35,24 +35,15 @@ router.get("/:userID", async (request, response) => {
 });
 
 // Update user details
-router.put("/", async (request, response) => {
-  const jwt = parseJWT(request.headers.authorization);
-  // Verify and refresh user JWT
-  const [foundUser, newJWT] = await verifyAndRefreshUserJWT(jwt);
-  request.headers.authorization = newJWT;
+router.put("/", verifyAndRefreshUserJWT, async (request, response) => {
+  const foundUser = await User.findById(request.userID).exec();
   // Update user using request.body data
   const updatedUser = await updateUser(foundUser, request.body);
 
   return response.json(updatedUser);
 });
 
-// Error handler
-async function errorHandler(error, request, response, next) {
-  if (error) {
-    return response.status(500).json(error.message);
-  } else {
-    next();
-  }
-}
+// Use errorHandler middleware
+router.use("/", errorHandler);
 
 module.exports = router;
