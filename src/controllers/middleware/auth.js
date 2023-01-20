@@ -43,7 +43,7 @@ async function verifyAndRefreshUserJWT(request, response, next) {
 function errorHandler(error, request, response, next) {
   console.log(error);
   if (error) {
-    return response.json({ error: error.message });
+    return response.status(500).json({ error: error.message });
   }
 }
 
