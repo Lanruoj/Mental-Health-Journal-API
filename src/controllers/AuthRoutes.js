@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { isEmail } = require("validator");
 
 const { User } = require("../models/User");
 const {
@@ -14,11 +15,20 @@ const {
   createUser,
 } = require("./UserFunctions");
 
+const { errorHandler } = require("./middleware/auth");
+
 // Register a new user and return JWT
 router.post("/register", errorHandler, async (request, response, next) => {
-  const createdUser = await createUser(request.body).catch((error) => {
-    return next(new Error(error));
-  });
+  const emailExists = await User.findOne({ email: request.body.email }).exec();
+  if (emailExists) return next(new Error("Email is already in use"));
+  if (request.body.password.length <= 8)
+    return next(new Error("Password must be greater than 8 characters"));
+  if (request.body.username.length <= 3)
+    return next(new Error("Username must be greater than 3 characters"));
+  if (!isEmail(request.body.email))
+    return next(new Error("Invalid email format"));
+
+  const createdUser = await createUser(request.body);
   const token = await generateUserJWT(createdUser);
 
   return response.json({ token });
@@ -38,15 +48,6 @@ router.post("/login", errorHandler, async (request, response, next) => {
     return response.json({ token });
   }
 });
-
-// Error handler
-async function errorHandler(error, request, response, next) {
-  if (error) {
-    return response.status(500).json({ error: error.message });
-  } else {
-    next();
-  }
-}
 
 router.use("/", errorHandler);
 

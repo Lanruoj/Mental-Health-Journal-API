@@ -1,5 +1,6 @@
 const dotenv = require("dotenv");
 dotenv.config();
+const { isEmail } = require("validator");
 
 const { User } = require("../models/User");
 
@@ -87,6 +88,13 @@ async function getUserById(userId) {
   return foundUser;
 }
 
+// Validate email format
+function validateEmail(email) {
+  if (!isEmail(email)) {
+    return false;
+  }
+}
+
 // Create and register a new user
 async function createUser(userData) {
   // Hash password
@@ -127,4 +135,5 @@ module.exports = {
   getUserById,
   updateUser,
   parseJWT,
+  // validateEmail,
 };
