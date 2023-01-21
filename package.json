@@ -26,6 +26,7 @@
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^6.8.4",
     "mongoose-autopopulate": "^0.17.1",
+    "underscore": "^1.13.6",
     "validator": "^13.7.0"
   }
 }

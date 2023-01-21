@@ -1,6 +1,7 @@
 const dotenv = require("dotenv");
 dotenv.config();
 const { isEmail } = require("validator");
+const { omit } = require("underscore");
 
 const { User } = require("../models/User");
 
@@ -113,13 +114,18 @@ async function createUser(userData) {
   return createdUser;
 }
 
-// Update a user details
+// Update a user details & return updated fields
 async function updateUser(userID, updateData) {
-  const updatedUser = await User.findByIdAndUpdate(userID, updateData, {
-    returnDocument: "after",
+  const targetUser = await User.findByIdAndUpdate(userID, updateData)
+    .lean()
+    .exec();
+  const updatedUser = await User.findById(userID).lean().exec();
+  const updatedFields = omit(updatedUser, (value, field) => {
+    return targetUser[field].toString() === value.toString();
   });
+  if (!Object.keys(updatedFields).length) return false;
 
-  return updatedUser;
+  return { user: updatedUser, updates: updatedFields };
 }
 
 module.exports = {

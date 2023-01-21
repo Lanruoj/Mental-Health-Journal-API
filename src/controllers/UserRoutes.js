@@ -35,12 +35,16 @@ router.get("/:userID", verifyAndRefreshUserJWT, async (request, response) => {
 });
 
 // Update user details
-router.put("/", verifyAndRefreshUserJWT, async (request, response) => {
+router.put("/", verifyAndRefreshUserJWT, async (request, response, next) => {
   const foundUser = await User.findById(request.userID).exec();
   // Update user using request.body data
   const updatedUser = await updateUser(foundUser, request.body);
+  if (!updatedUser) return next(new Error("No updates performed"));
 
-  return response.json(updatedUser);
+  return response.json({
+    id: updatedUser.user._id,
+    updates: updatedUser.updates,
+  });
 });
 
 // Use errorHandler middleware
