@@ -8,8 +8,7 @@ const {
   generateUserJWT,
   createUser,
 } = require("./UserFunctions");
-
-const { errorHandler } = require("./middleware/auth");
+const { errorHandler } = require("./middleware/errorHandler");
 
 // Register a new user and return JWT
 router.post("/register", errorHandler, async (request, response, next) => {

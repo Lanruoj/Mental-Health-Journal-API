@@ -8,8 +8,8 @@ const {
   updateUser,
   deleteUser,
 } = require("./UserFunctions");
-
-const { verifyAndRefreshUserJWT, errorHandler } = require("./middleware/auth");
+const { verifyAndRefreshUserJWT } = require("./middleware/auth");
+const { errorHandler } = require("./middleware/errorHandler");
 
 // Get all users
 router.get(

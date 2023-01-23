@@ -1,10 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const {
-  getAllPosts,
-  getPostById,
-  errorHandler,
-} = require("../controllers/PostFunctions");
+const { getAllPosts, getPostById } = require("../controllers/PostFunctions");
+const { errorHandler } = require("./middleware/errorHandler");
 
 router.get("/", async (request, response, next) => {
   const allPosts = await getAllPosts();
