@@ -44,10 +44,19 @@ async function updatePost(postID, updateData) {
   return { post: updatedPost._id, updates: updatedFields };
 }
 
+// Delete a post
+async function deletePost(postID) {
+  const deletedPost = await Post.findByIdAndDelete(postId).exec();
+  if (!deletedPost) throw new Error("Post not found");
+
+  return deletedPost;
+}
+
 module.exports = {
   getAllPosts,
   getPostById,
   createPost,
   verifyIfAuthor,
   updatePost,
+  deletePost,
 };

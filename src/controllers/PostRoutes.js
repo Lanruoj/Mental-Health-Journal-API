@@ -9,6 +9,7 @@ const {
 } = require("../controllers/PostFunctions");
 const { verifyAndRefreshUserJWT } = require("./middleware/auth");
 const { errorHandler } = require("./middleware/errorHandler");
+const { deleteUser } = require("./UserFunctions");
 
 // Get all posts
 router.get("/", async (request, response, next) => {
@@ -54,12 +55,11 @@ router.put(
   verifyAndRefreshUserJWT,
   async (request, response, next) => {
     // Verify if user is author of post from JWT
-    const isAuthor = await verifyIfAuthor(
-      request.params.postID,
-      request.userID
-    ).catch((error) => {
-      return next(new Error(error.message));
-    });
+    await verifyIfAuthor(request.params.postID, request.userID).catch(
+      (error) => {
+        return next(new Error(error.message));
+      }
+    );
     // Update post
     const updatedPost = await updatePost(
       request.params.postID,
@@ -69,6 +69,21 @@ router.put(
     });
 
     return response.json(updatedPost);
+  }
+);
+
+router.delete(
+  "/:postID",
+  verifyAndRefreshUserJWT,
+  async (request, response, next) => {
+    await verifyIfAuthor(request.params.postID, request.userID).catch(
+      (error) => {
+        return next(new Error(error.message));
+      }
+    );
+    const deletedUser = deleteUser(request.params.postID);
+
+    return response.status(204).json(deletedUser);
   }
 );
 
