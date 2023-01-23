@@ -4,6 +4,8 @@ const {
   getAllPosts,
   getPostById,
   createPost,
+  verifyIfAuthor,
+  updatePost,
 } = require("../controllers/PostFunctions");
 const { verifyAndRefreshUserJWT } = require("./middleware/auth");
 const { errorHandler } = require("./middleware/errorHandler");
@@ -45,6 +47,30 @@ router.post("/", verifyAndRefreshUserJWT, async (request, response, next) => {
 
   return response.json(newPost);
 });
+
+// Update a post
+router.put(
+  "/:postID",
+  verifyAndRefreshUserJWT,
+  async (request, response, next) => {
+    // Verify if user is author of post from JWT
+    const isAuthor = await verifyIfAuthor(
+      request.params.postID,
+      request.userID
+    ).catch((error) => {
+      return next(new Error(error.message));
+    });
+    // Update post
+    const updatedPost = await updatePost(
+      request.params.postID,
+      request.body
+    ).catch((error) => {
+      return next(new Error(error.message));
+    });
+
+    return response.json(updatedPost);
+  }
+);
 
 router.use("*", errorHandler);
 

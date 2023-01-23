@@ -113,11 +113,11 @@ async function updateUser(userID, updateData) {
     .exec();
   const updatedUser = await User.findById(userID).lean().exec();
   const updatedFields = omit(updatedUser, (value, field) => {
-    return targetUser[field].toString() === value.toString();
+    return targetUser[field]?.toString() === value?.toString();
   });
-  if (!Object.keys(updatedFields).length) return false;
+  if (!Object.keys(updatedFields).length) throw new Error("No update data");
 
-  return { user: updatedUser, updates: updatedFields };
+  return { user: updatedUser._id, updates: updatedFields };
 }
 
 // Delete a user

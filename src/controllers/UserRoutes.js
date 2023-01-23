@@ -33,13 +33,13 @@ router.get("/:userID", verifyAndRefreshUserJWT, async (request, response) => {
 router.put("/", verifyAndRefreshUserJWT, async (request, response, next) => {
   const foundUser = await User.findById(request.userID).exec();
   // Update user using request.body data
-  const updatedUser = await updateUser(foundUser, request.body);
-  if (!updatedUser) return next(new Error("No updates performed"));
+  const updatedUser = await updateUser(foundUser, request.body).catch(
+    (error) => {
+      return next(new Error(error.message));
+    }
+  );
 
-  return response.json({
-    id: updatedUser.user._id,
-    updates: updatedUser.updates,
-  });
+  return response.json(updatedUser);
 });
 
 // Delete user
