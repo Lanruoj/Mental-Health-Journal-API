@@ -108,12 +108,12 @@ async function createUser(userData) {
 
 // Update a user details & return updated fields
 async function updateUser(userID, updateData) {
-  const targetUser = await User.findByIdAndUpdate(userID, updateData)
+  const originalUser = await User.findByIdAndUpdate(userID, updateData)
     .lean()
     .exec();
   const updatedUser = await User.findById(userID).lean().exec();
   const updatedFields = omit(updatedUser, (value, field) => {
-    return targetUser[field]?.toString() === value?.toString();
+    return originalUser[field]?.toString() === value?.toString();
   });
   if (!Object.keys(updatedFields).length) throw new Error("No update data");
 
