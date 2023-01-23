@@ -8,7 +8,6 @@ const {
   updatePost,
 } = require("../controllers/PostFunctions");
 const { verifyAndRefreshUserJWT } = require("./middleware/auth");
-const { errorHandler } = require("./middleware/errorHandler");
 const { deleteUser } = require("./UserFunctions");
 
 // Get all posts
@@ -86,7 +85,5 @@ router.delete(
     return response.status(204).json(deletedUser);
   }
 );
-
-router.use("*", errorHandler);
 
 module.exports = router;

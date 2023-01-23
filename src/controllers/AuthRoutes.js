@@ -8,10 +8,9 @@ const {
   generateUserJWT,
   createUser,
 } = require("./UserFunctions");
-const { errorHandler } = require("./middleware/errorHandler");
 
 // Register a new user and return JWT
-router.post("/register", errorHandler, async (request, response, next) => {
+router.post("/register", async (request, response, next) => {
   const emailExists = await User.findOne({ email: request.body.email }).exec();
   if (emailExists) return next(new Error("Email is already in use"));
   if (request.body.password.length <= 8)
@@ -28,7 +27,7 @@ router.post("/register", errorHandler, async (request, response, next) => {
 });
 
 // Login an existing user and return JWT
-router.post("/login", errorHandler, async (request, response, next) => {
+router.post("/login", async (request, response, next) => {
   const existingUser = await User.findOne({ email: request.body.email });
   if (
     !existingUser ||
@@ -41,7 +40,5 @@ router.post("/login", errorHandler, async (request, response, next) => {
     return response.json({ token });
   }
 });
-
-router.use("*", errorHandler);
 
 module.exports = router;

@@ -9,7 +9,6 @@ const {
   deleteUser,
 } = require("./UserFunctions");
 const { verifyAndRefreshUserJWT } = require("./middleware/auth");
-const { errorHandler } = require("./middleware/errorHandler");
 
 // Get all users
 router.get(
@@ -48,8 +47,5 @@ router.delete("/", verifyAndRefreshUserJWT, async (request, response, next) => {
 
   return response.json({ message: "User deleted" });
 });
-
-// Use errorHandler middleware
-router.use("*", errorHandler);
 
 module.exports = router;

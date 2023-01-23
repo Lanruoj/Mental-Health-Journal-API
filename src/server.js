@@ -36,6 +36,7 @@ app.use(cors(corsOptions));
 app.use("/auth", require("./controllers/AuthRoutes"));
 app.use("/users", require("./controllers/UserRoutes"));
 app.use("/posts", require("./controllers/PostRoutes"));
+const { errorHandler } = require("./controllers/middleware/errorHandler");
 
 // Configure database URL
 const mongoose = require("mongoose");
@@ -65,7 +66,7 @@ connectDatabase(databaseURL)
   })
   .catch((error) => {
     console.log(`An error occurred connecting to the database:
-  ${error}`);
+    ${error}`);
   });
 
 // Get database data
@@ -125,5 +126,8 @@ app.get("*", (request, response) => {
     attemptedPath: request.path,
   });
 });
+
+// Global error handler
+app.use("*", errorHandler);
 
 module.exports = { HOST, PORT, app };
