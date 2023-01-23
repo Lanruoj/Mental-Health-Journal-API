@@ -50,6 +50,6 @@ router.delete("/", verifyAndRefreshUserJWT, async (request, response, next) => {
 });
 
 // Use errorHandler middleware
-router.use("/", errorHandler);
+router.use("*", errorHandler);
 
 module.exports = router;

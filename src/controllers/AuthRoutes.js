@@ -43,6 +43,6 @@ router.post("/login", errorHandler, async (request, response, next) => {
   }
 });
 
-router.use("/", errorHandler);
+router.use("*", errorHandler);
 
 module.exports = router;
