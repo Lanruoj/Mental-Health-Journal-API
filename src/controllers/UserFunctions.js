@@ -128,6 +128,13 @@ async function updateUser(userID, updateData) {
   return { user: updatedUser, updates: updatedFields };
 }
 
+// Delete a user
+async function deleteUser(userID) {
+  const deletedUser = await User.findByIdAndDelete(userID).exec();
+
+  return deletedUser;
+}
+
 module.exports = {
   encryptString,
   decryptString,
@@ -141,5 +148,5 @@ module.exports = {
   getUserById,
   updateUser,
   parseJWT,
-  // validateEmail,
+  deleteUser,
 };

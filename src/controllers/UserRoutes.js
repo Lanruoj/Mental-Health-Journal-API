@@ -15,6 +15,7 @@ const {
   getUserById,
   updateUser,
   parseJWT,
+  deleteUser,
 } = require("./UserFunctions");
 
 const { verifyAndRefreshUserJWT, errorHandler } = require("./middleware/auth");
@@ -45,6 +46,13 @@ router.put("/", verifyAndRefreshUserJWT, async (request, response, next) => {
     id: updatedUser.user._id,
     updates: updatedUser.updates,
   });
+});
+
+// Delete user
+router.delete("/", verifyAndRefreshUserJWT, async (request, response, next) => {
+  await deleteUser(request.userID).catch((error) => console.log("BANANAS"));
+
+  return response.json({ message: "User deleted" });
 });
 
 // Use errorHandler middleware

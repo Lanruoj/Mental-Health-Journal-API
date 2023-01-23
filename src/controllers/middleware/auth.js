@@ -25,6 +25,7 @@ async function verifyAndRefreshUserJWT(request, response, next) {
   const userData = JSON.parse(decryptedJWT);
   // Find User from data
   const targetUser = await User.findById(userData._id).exec();
+  if (!targetUser) return next(new Error("Invalid access token"));
   // Check that JWT data matches stored data
   if (
     targetUser.password == userData.password &&
