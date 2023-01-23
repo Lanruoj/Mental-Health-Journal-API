@@ -3,18 +3,9 @@ const router = express.Router();
 
 const { User } = require("../models/User");
 const {
-  encryptString,
-  decryptString,
-  decryptObject,
-  hashString,
-  validateHashedData,
-  generateJWT,
-  generateUserJWT,
   getAllUsers,
-  createUser,
   getUserById,
   updateUser,
-  parseJWT,
   deleteUser,
 } = require("./UserFunctions");
 

@@ -4,14 +4,8 @@ const { isEmail } = require("validator");
 
 const { User } = require("../models/User");
 const {
-  encryptString,
-  decryptString,
-  decryptObject,
-  hashString,
   validateHashedData,
-  generateJWT,
   generateUserJWT,
-  getAllUsers,
   createUser,
 } = require("./UserFunctions");
 

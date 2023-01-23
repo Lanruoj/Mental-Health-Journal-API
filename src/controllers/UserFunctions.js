@@ -1,6 +1,5 @@
 const dotenv = require("dotenv");
 dotenv.config();
-const { isEmail } = require("validator");
 const { omit } = require("underscore");
 
 const { User } = require("../models/User");
@@ -87,13 +86,6 @@ async function getUserById(userId) {
   const foundUser = await User.findById(userId);
 
   return foundUser;
-}
-
-// Validate email format
-function validateEmail(email) {
-  if (!isEmail(email)) {
-    return false;
-  }
 }
 
 // Create and register a new user
