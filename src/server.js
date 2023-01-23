@@ -35,6 +35,7 @@ app.use(cors(corsOptions));
 // Import routes
 app.use("/auth", require("./controllers/AuthRoutes"));
 app.use("/users", require("./controllers/UserRoutes"));
+app.use("/posts", require("./controllers/PostRoutes"));
 
 // Configure database URL
 const mongoose = require("mongoose");

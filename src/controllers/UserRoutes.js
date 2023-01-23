@@ -12,11 +12,14 @@ const {
 const { verifyAndRefreshUserJWT, errorHandler } = require("./middleware/auth");
 
 // Get all users
-router.get("/", verifyAndRefreshUserJWT, async (request, response) => {
-  const users = await getAllUsers();
+router.get(
+  "/",
+  /*verifyAndRefreshUserJWT,*/ async (request, response) => {
+    const users = await getAllUsers();
 
-  return response.json(users);
-});
+    return response.json(users);
+  }
+);
 
 // Get user by ID param
 router.get("/:userID", verifyAndRefreshUserJWT, async (request, response) => {
