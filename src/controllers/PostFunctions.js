@@ -12,4 +12,10 @@ async function getPostById(postID) {
   return foundPost;
 }
 
-module.exports = { getAllPosts, getPostById };
+async function createPost(postData) {
+  const createdPost = await Post.create(postData);
+
+  return createdPost;
+}
+
+module.exports = { getAllPosts, getPostById, createPost };
