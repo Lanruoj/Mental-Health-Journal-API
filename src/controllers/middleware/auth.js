@@ -1,7 +1,9 @@
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 dotenv.config();
+const mongoose = require("mongoose");
 const { User } = require("../../models/User");
+const { Role } = require("../../models/Role");
 const {
   parseJWT,
   decryptString,
@@ -31,8 +33,9 @@ async function verifyAndRefreshUserJWT(request, response, next) {
     targetUser.password == userData.password &&
     targetUser.email == userData.email
   ) {
-    request.userID = targetUser._id;
     const newJWT = await generateUserJWT(targetUser);
+    request.userID = targetUser._id;
+    request.userRole = targetUser.role;
     request.headers.jwt = newJWT;
     next();
   } else {
@@ -40,4 +43,16 @@ async function verifyAndRefreshUserJWT(request, response, next) {
   }
 }
 
-module.exports = { verifyAndRefreshUserJWT };
+async function allowAdminOnly(request, response, next) {
+  // Convert role string stored in user to ObjectId
+  const userRoleID = mongoose.Types.ObjectId(request.userRole);
+  const role = await Role.findById(userRoleID).exec();
+  if (role.name !== "admin")
+    return next(
+      new Error("User must be an administrator to perform this task")
+    );
+
+  next();
+}
+
+module.exports = { verifyAndRefreshUserJWT, allowAdminOnly };
