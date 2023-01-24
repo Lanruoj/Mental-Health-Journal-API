@@ -67,11 +67,12 @@ router.put(
   verifyAndRefreshUserJWT,
   async (request, response, next) => {
     // Verify if user is author of post from JWT
-    await verifyIfAuthor(request.params.postID, request.userID).catch(
-      (error) => {
-        return next(new Error(error.message));
-      }
-    );
+    if (request.userRole !== "admin")
+      await verifyIfAuthor(request.params.postID, request.userID).catch(
+        (error) => {
+          return next(new Error(error.message));
+        }
+      );
     // Update post
     const updatedPost = await updatePost(
       request.params.postID,

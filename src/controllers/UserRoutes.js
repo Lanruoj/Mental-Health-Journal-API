@@ -26,12 +26,17 @@ router.get(
 );
 
 // Get user by ID param
-router.get("/:userID", verifyAndRefreshUserJWT, async (request, response) => {
-  const foundUser = await getUserById(request.params.userID).catch((error) =>
-    next(new Error("User not found with that ID"))
-  );
-  return response.json(foundUser);
-});
+router.get(
+  "/:userID",
+  verifyAndRefreshUserJWT,
+  allowAdminOnly,
+  async (request, response) => {
+    const foundUser = await getUserById(request.params.userID).catch((error) =>
+      next(new Error("User not found with that ID"))
+    );
+    return response.json(foundUser);
+  }
+);
 
 // Update user details
 router.put("/", verifyAndRefreshUserJWT, async (request, response, next) => {

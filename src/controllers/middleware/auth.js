@@ -27,6 +27,7 @@ async function verifyAndRefreshUserJWT(request, response, next) {
   const userData = JSON.parse(decryptedJWT);
   // Find User from data
   const targetUser = await User.findById(userData._id).exec();
+  const role = await Role.findById(targetUser.role).exec();
   if (!targetUser) return next(new Error("Invalid access token"));
   // Check that JWT data matches stored data
   if (
@@ -35,7 +36,7 @@ async function verifyAndRefreshUserJWT(request, response, next) {
   ) {
     const newJWT = await generateUserJWT(targetUser);
     request.userID = targetUser._id;
-    request.userRole = targetUser.role;
+    request.userRole = role.name;
     request.headers.jwt = newJWT;
     next();
   } else {
@@ -44,10 +45,7 @@ async function verifyAndRefreshUserJWT(request, response, next) {
 }
 
 async function allowAdminOnly(request, response, next) {
-  // Convert role string stored in user to ObjectId
-  const userRoleID = request.userRole;
-  const role = await Role.findById(userRoleID).exec();
-  if (role.name !== "admin")
+  if (request.userRole !== "admin")
     return next(
       new Error("User must be an administrator to perform this task")
     );
