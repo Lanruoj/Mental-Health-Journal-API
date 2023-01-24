@@ -100,7 +100,6 @@ async function createUser(userData) {
     username: userData.username,
     firstName: userData.firstName || null,
     lastName: userData.lastName || null,
-    role: mongoose.Types.ObjectId(userData.role),
   };
   const createdUser = await User.create(newUser);
 

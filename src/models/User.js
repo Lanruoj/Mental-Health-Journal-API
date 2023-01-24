@@ -1,28 +1,18 @@
 const mongoose = require("mongoose");
-const { isEmail } = require("validator");
-const mongooseAutoPopulate = require("mongoose-autopopulate");
 const { Role } = require("../models/Role");
-
-// // Validate email format
-// function validateEmail(email) {
-//   if (!isEmail(email)) {
-//     return false;
-//   }
-// }
 
 const UserSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    // validate: [validateEmail, "Must be a valid email address"],
   },
   password: {
     type: String,
-    // minLength: [8, "Password must be at least 8 characters"],
+    required: true,
   },
   username: {
     type: String,
-    // minLength: [3, "Username must be at least 3 characters"],
+    required: true,
   },
   firstName: String,
   lastName: String,
@@ -31,6 +21,14 @@ const UserSchema = new mongoose.Schema({
     ref: "Role",
   },
   posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
+});
+
+// Add regular role ObjectId to each new user by default
+UserSchema.pre("save", async function (next) {
+  const regularRole = await Role.findOne({ name: "regular" }).exec();
+  if (this.role == null || this.role == "") this.role = regularRole._id;
+
+  next();
 });
 
 const User = mongoose.model("User", UserSchema);
