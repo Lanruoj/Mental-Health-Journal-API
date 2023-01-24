@@ -19,13 +19,6 @@ async function createPost(postData) {
   return createdPost;
 }
 
-async function verifyIfAuthor(postID, userID) {
-  const post = await Post.findOne({ _id: postID, author: userID }).exec();
-  if (!post) throw new Error("User is not authorised to perform this action");
-
-  return post;
-}
-
 // Update a post's details & return updated fields
 async function updatePost(postID, updateData) {
   // Update and return unmodified post
@@ -56,7 +49,6 @@ module.exports = {
   getAllPosts,
   getPostById,
   createPost,
-  verifyIfAuthor,
   updatePost,
   deletePost,
 };

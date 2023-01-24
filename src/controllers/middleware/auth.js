@@ -1,9 +1,9 @@
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 dotenv.config();
-const mongoose = require("mongoose");
 const { User } = require("../../models/User");
 const { Role } = require("../../models/Role");
+const { Post } = require("../../models/Post");
 const {
   parseJWT,
   decryptString,
@@ -53,4 +53,24 @@ async function allowAdminOnly(request, response, next) {
   next();
 }
 
-module.exports = { verifyAndRefreshUserJWT, allowAdminOnly };
+async function verifyIfAuthor(postID, userID) {
+  const post = await Post.findOne({ _id: postID, author: userID }).exec();
+  if (!post) return false;
+
+  return post;
+}
+
+async function allowAuthorOrAdmin(request, response, next) {
+  const isAuthor = await verifyIfAuthor(request.params.postID, request.userID);
+  if (request.userRole == "admin" || isAuthor) {
+    next();
+  } else {
+    return next(new Error("User not authorised"));
+  }
+}
+
+module.exports = {
+  verifyAndRefreshUserJWT,
+  allowAdminOnly,
+  allowAuthorOrAdmin,
+};

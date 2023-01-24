@@ -4,12 +4,12 @@ const {
   getAllPosts,
   getPostById,
   createPost,
-  verifyIfAuthor,
   updatePost,
 } = require("../controllers/PostFunctions");
 const {
   verifyAndRefreshUserJWT,
   allowAdminOnly,
+  allowAuthorOrAdmin,
 } = require("./middleware/auth");
 const { deleteUser } = require("./UserFunctions");
 
@@ -29,7 +29,7 @@ router.get(
 router.get(
   "/:postID",
   verifyAndRefreshUserJWT,
-  allowAdminOnly,
+  allowAuthorOrAdmin,
   async (request, response, next) => {
     let post;
     try {
@@ -65,14 +65,8 @@ router.post("/", verifyAndRefreshUserJWT, async (request, response, next) => {
 router.put(
   "/:postID",
   verifyAndRefreshUserJWT,
+  allowAuthorOrAdmin,
   async (request, response, next) => {
-    // Verify if user is author of post from JWT
-    if (request.userRole !== "admin")
-      await verifyIfAuthor(request.params.postID, request.userID).catch(
-        (error) => {
-          return next(new Error(error.message));
-        }
-      );
     // Update post
     const updatedPost = await updatePost(
       request.params.postID,
@@ -88,12 +82,8 @@ router.put(
 router.delete(
   "/:postID",
   verifyAndRefreshUserJWT,
+  allowAuthorOrAdmin,
   async (request, response, next) => {
-    await verifyIfAuthor(request.params.postID, request.userID).catch(
-      (error) => {
-        return next(new Error(error.message));
-      }
-    );
     const deletedUser = deleteUser(request.params.postID);
 
     return response.status(204).json(deletedUser);
