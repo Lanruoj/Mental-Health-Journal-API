@@ -2,7 +2,7 @@ const { omit } = require("underscore");
 const { Post } = require("../models/Post");
 
 async function getAllPosts() {
-  const allPosts = await Post.find({}).exec();
+  const allPosts = await Post.find({}).populate("author", "username").exec();
 
   return allPosts;
 }
