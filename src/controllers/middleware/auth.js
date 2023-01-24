@@ -45,7 +45,7 @@ async function verifyAndRefreshUserJWT(request, response, next) {
 
 async function allowAdminOnly(request, response, next) {
   // Convert role string stored in user to ObjectId
-  const userRoleID = mongoose.Types.ObjectId(request.userRole);
+  const userRoleID = request.userRole;
   const role = await Role.findById(userRoleID).exec();
   if (role.name !== "admin")
     return next(

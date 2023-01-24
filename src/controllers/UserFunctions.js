@@ -1,6 +1,7 @@
 const dotenv = require("dotenv");
 dotenv.config();
 const { omit } = require("underscore");
+const mongoose = require("mongoose");
 
 const { User } = require("../models/User");
 
@@ -99,7 +100,7 @@ async function createUser(userData) {
     username: userData.username,
     firstName: userData.firstName || null,
     lastName: userData.lastName || null,
-    role: userData.role,
+    role: mongoose.Types.ObjectId(userData.role),
   };
   const createdUser = await User.create(newUser);
 

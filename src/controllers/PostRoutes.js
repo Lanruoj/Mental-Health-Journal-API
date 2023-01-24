@@ -7,27 +7,40 @@ const {
   verifyIfAuthor,
   updatePost,
 } = require("../controllers/PostFunctions");
-const { verifyAndRefreshUserJWT } = require("./middleware/auth");
+const {
+  verifyAndRefreshUserJWT,
+  allowAdminOnly,
+} = require("./middleware/auth");
 const { deleteUser } = require("./UserFunctions");
 
 // Get all posts
-router.get("/", async (request, response, next) => {
-  const allPosts = await getAllPosts();
+router.get(
+  "/",
+  verifyAndRefreshUserJWT,
+  allowAdminOnly,
+  async (request, response, next) => {
+    const allPosts = await getAllPosts();
 
-  return response.json(allPosts);
-});
+    return response.json(allPosts);
+  }
+);
 
 // Get post by ID
-router.get("/:postID", async (request, response, next) => {
-  let post;
-  try {
-    post = await getPostById(request.params.postID);
-  } catch (error) {
-    return next(new Error("Post not found"));
-  }
+router.get(
+  "/:postID",
+  verifyAndRefreshUserJWT,
+  allowAdminOnly,
+  async (request, response, next) => {
+    let post;
+    try {
+      post = await getPostById(request.params.postID);
+    } catch (error) {
+      return next(new Error("Post not found"));
+    }
 
-  return response.json(post);
-});
+    return response.json(post);
+  }
+);
 
 // Create new post
 router.post("/", verifyAndRefreshUserJWT, async (request, response, next) => {
